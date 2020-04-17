@@ -35,7 +35,7 @@ class WatchRun
 
     make_changes
 
-    wait 0.5
+    wait 10
 
     stop
   end
@@ -60,11 +60,17 @@ class WatchRun
 
   MIN_WAIT_SECONDS = 1
 
+  ENVIRONMENT_COEFFICIENTS = {
+    -> { ENV['CI'] } => 2,
+    -> { RUBY_PLATFORM == 'java' } => 2,
+    -> { Gem::Platform.local.os == 'darwin' } => 2
+  }.freeze
+
   def wait(seconds, interval)
-    interval *= 1.5 if ENV['CI']
-    # interval *= 1.5 if RUBY_PLATFORM == 'java'
-    interval *= 1.5 if Gem::Platform.local.os == 'darwin'
-    seconds ||= [interval * 2, MIN_WAIT_SECONDS].max
+    ENVIRONMENT_COEFFICIENTS.each do |condition, coefficient|
+      interval *= coefficient if condition.call
+    end
+    seconds ||= [interval * 4, MIN_WAIT_SECONDS].max
     (seconds / interval).ceil.times do
       break if block_given? && yield
 
