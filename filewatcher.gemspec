@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '~> 2.4'
 
-  s.add_runtime_dependency     'optimist', '~> 3.0'
+  s.add_runtime_dependency     'optimist', '3.0.1'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.8'
   s.add_development_dependency 'rubocop', '~> 0.82.0'
